@@ -6,7 +6,7 @@
 'use strict';
 
 var TimeEngine = require("../core/time-engine");
-var PriorityQueue = require("../utils/priority-queue");
+var PriorityQueue = require("../utils/priority-queue-heap");
 var { getScheduler } = require('./factories');
 
 function removeCouple(firstArray, secondArray, firstElement) {
@@ -288,7 +288,6 @@ class Transport extends TimeEngine {
 
   __syncTransportedPosition(time, position, speed) {
     var numTransportedEngines = this.__transported.length;
-    var nextPosition = Infinity;
 
     if (numTransportedEngines > 0) {
       var engine, nextEnginePosition;
@@ -296,18 +295,15 @@ class Transport extends TimeEngine {
       this.__transportQueue.clear();
       this.__transportQueue.reverse = (speed < 0);
 
-      for (var i = numTransportedEngines - 1; i > 0; i--) {
+      for (var i = 0; i < numTransportedEngines; i++) {
         engine = this.__transported[i];
         nextEnginePosition = engine.syncPosition(time, position, speed);
-        this.__transportQueue.insert(engine, nextEnginePosition, false); // insert but don't sort
+        this.__transportQueue.insert(engine, nextEnginePosition);  
       }
 
-      engine = this.__transported[0];
-      nextEnginePosition = engine.syncPosition(time, position, speed);
-      nextPosition = this.__transportQueue.insert(engine, nextEnginePosition, true); // insert and sort
     }
 
-    return nextPosition;
+    return this.__transportQueue.time;
   }
 
   __syncTransportedSpeed(time, position, speed) {
