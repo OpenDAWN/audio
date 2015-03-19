@@ -83,8 +83,12 @@ describe("PriorityQueue", function(){
         // Move non existing object
         var pq2 = new PriorityQueue();
         pq2.move(obj1, time1);
+        pq2.move(obj2, time2); // Also needs to insert
         assert.equal(pq2.head, obj1);
         assert.equal(pq2.time, time1);
+        pq2.__heap.deleteHead();
+        assert.equal(pq2.head, obj2);
+        assert.equal(pq2.time, time2);
         // Move object to time Infinity
         var pq3 =  new PriorityQueue();
         pq3.insert(obj1, 1);

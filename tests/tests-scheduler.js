@@ -2,10 +2,11 @@ var assert = require('assert');
 var sinon = require('sinon');
 
 var audioContext = require("../es6/core/audio-context");
-var scheduler = require("../es6/masters/scheduler");
+var Scheduler = require("../es6/masters/scheduler");
 var TimeEngine = require("../es6/core/time-engine");
 
 var currentTimeDeviation = 128 / 44100; // the audioContext.currentTime accuracy
+var scheduler = new Scheduler(audioContext);
 
 describe("Scheduler", function() {
     afterEach(function() {
@@ -35,8 +36,8 @@ describe("Scheduler", function() {
     it('should not remove an engine that doesn\'t belong to the scheduler', function() {
         assert.throws(function() {
             var engine = new TimeEngine();
-            scheduler.remove(engine)
-        })
+            scheduler.remove(engine);
+        }, Error);
     });
     it('should remove an engine that was previously added to the scheduler', function() {
         var engine = new TimeEngine();

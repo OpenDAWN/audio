@@ -39,6 +39,10 @@ insert.add('PriorityQueue#Insert', function() {
   pqh.insert(obj3, 30);
   pqh.clear();
 })
+.add('PriorityQueueHeap#Build', function() {
+  pqh.__heap.buildHeap([{'object': obj1, 'heapValue': 10},{'object': obj2, 'heapValue': 20},{'object': obj3, 'heapValue': 30}]);
+  pqh.clear();
+})
 // add listeners 
 .on('cycle', function(event) {
   console.log(String(event.target));
