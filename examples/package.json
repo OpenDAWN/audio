@@ -1,0 +1,28 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "browserify": {
+    "transforms": [
+      "es6ify"
+    ]
+  },
+  "scripts": {
+    "bundle": "browserify index.es6.js > dist/index.js -s 'app' -d -t es6ify",
+    "build": "npm run bundle",
+    "sass": "sass --watch styles/sass:styles/css",
+    "watch": "nodemon -e es6.js -x npm run bundle",
+    "start": "npm run watch && npm run sass",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^9.0.3",
+    "es6ify": "^1.6.0"
+  },
+  "dependencies": {
+    "waves-loaders": "git://github.com/wavesjs/loaders"
+  }
+}
