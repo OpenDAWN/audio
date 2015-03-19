@@ -114,6 +114,18 @@ class Heap {
 	}
 
 	/**
+	* Returns wheter or not the object is already in the heap
+	*/
+	contains(object) {
+		for (var i = 1; i <= this.currentSize; i++) {
+			if (object === this.heapList[i].object) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns whether or not the heap is empty.
 	 */
 	isEmpty() {

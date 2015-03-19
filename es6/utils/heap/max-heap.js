@@ -8,10 +8,10 @@ var Heap = require('./heap');
  *
  * @author: Renaud Vincent https://github.com/renaudfv
  **/
-class MaxHeap extends Heap {
+ class MaxHeap extends Heap {
 
-	constructor() {
-		super();
+ 	constructor() {
+ 		super();
 		// Empty object with maximal value used for swaping on the first insertions
 		this.heapList = [{
 			'object': {},
@@ -24,11 +24,11 @@ class MaxHeap extends Heap {
 	 * used locally from the end of the heap list upon insertion, update and
 	 * removal. It percolates max values up the binary tree.
 	 */
-	__percUp(i) {
-		var ceiledIndex, tmp;
+	 __percUp(i) {
+	 	var ceiledIndex, tmp;
 
-		while (Math.floor(i / 2) > 0) {
-			ceiledIndex = Math.floor(i / 2);
+	 	while (Math.floor(i / 2) > 0) {
+	 		ceiledIndex = Math.ceil(i / 2);
 			// Is the item at i greater than the one at ceiled index
 			if (this.heapList[i].heapValue >  this.heapList[ceiledIndex].heapValue) {
 				tmp = this.heapList[ceiledIndex];
@@ -45,11 +45,11 @@ class MaxHeap extends Heap {
 	 * used locally from the start of the heap list upon deletion. Items are 
 	 * swaped down the tree if they have a smaller reference value.
 	 */
-	__percDown(i) {
-		var refPos, tmp;
+	 __percDown(i) {
+	 	var refPos, tmp;
 
-		while ((i * 2) <= this.currentSize) {
-			refPos = this.__childPosition(i);
+	 	while ((i * 2) <= this.currentSize) {
+	 		refPos = this.__childPosition(i);
 			// Is the item at i smaller than the reference down the tree
 			if (this.heapList[i].heapValue < this.heapList[refPos].heapValue) {
 				tmp = this.heapList[i];
@@ -65,35 +65,38 @@ class MaxHeap extends Heap {
 	 * Finds the item object reference in the heap list brings it up the tree by
 	 * having an infinity value. The tree is the sorted and the head is removed.
 	 */
-	remove(item) {
-		for (var i = 0; i <= this.currentSize; i++) {
-			if (item === this.heapList[i].object) {
-				this.heapList[i].heapValue = Infinity;
-				this.__percUp(this.currentSize);
-				this.deleteHead();
-			}
-		}
+	 remove(item) {
+	 	for (var i = 0; i <= this.currentSize; i++) {
+	 		if (item === this.heapList[i].object) {
+	 			this.heapList[i].heapValue = Infinity;
+	 			this.__percUp(this.currentSize);
+	 			this.deleteHead();
+	 		}
+	 	}
 
-		return Infinity;
-	}
+	 	if(!this.isEmpty()) 
+	 		return this.headValue();
+
+	 	return Infinity;
+	 }
 
 	/**
 	 * Build heap from an object list and structure it with a maximal swap 
 	 * reference
 	 */
-	buildHeap(list) {
-		this.currentSize = list.length;
-		this.heapList = [{
-			'object': {},
-			'heapValue': Infinity
-		}].concat(list);
-
-		var i = list.length;
-		while (i  >  0) {
-			this.__percUp(i);
-			i--;
-		}
-	}
+	 buildHeap(list) {
+	 	this.currentSize = list.length;
+	 	this.heapList = [{
+	 		'object': {},
+	 		'heapValue': Infinity
+	 	}].concat(list);
+	 	
+	 	var i = list.length;
+	 	while (i  >  0) {
+	 		this.__percUp(i);
+	 		i--;
+	 	}
+	 }
 
 	/**
 	* Clear the list with a maximal heapValue swap reference

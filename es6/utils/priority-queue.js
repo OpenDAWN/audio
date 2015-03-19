@@ -59,7 +59,7 @@ class PriorityQueue {
     if (time !== Infinity && time != -Infinity) {
       // add new object
       this.__objects.push([object, time]);
-
+      
       if (sort)
         this.__sortObjects();
 
@@ -77,16 +77,20 @@ class PriorityQueue {
       
       var index = this.__objectIndex(object);
 
-      if (index < 0)
-        this.__objects.push([object, time]); // add new object
-      else
+      if (index < 0) {
+        this.__objects.push([object, time]); // add new object        
+      }
+
+      else {
         this.__objects[index][1] = time; // update time of existing object
+      }
+        
 
       this.__sortObjects();
 
       return this.__objects[0][1]; // return time of first object
     }
-
+    
     return this.__removeObject(object);
   }
 
@@ -123,6 +127,16 @@ class PriorityQueue {
       return this.__objects[0][1];
 
     return Infinity;
+  }
+
+  toString() {
+    var list = this.__objects;
+    var string = "Contains: ";
+    for (var i = 0; i < list.length; i++) {
+      var obj = list[i][0];
+      string += obj.constructor.name + " at " + list[i][1] + " ";
+    }
+    return string;
   }
 }
 
