@@ -21,7 +21,7 @@ class PriorityQueue {
 	 * with "false" as third argument)
 	 */
 	insert(object, time) {
-		if (time !== Infinity && time != -Infinity) {
+		if (time !== Infinity && time !== -Infinity) {
 			// add new object
 			this.__heap.insert(time, object);
 			return this.__heap.headValue(); // return time of first object
@@ -34,9 +34,9 @@ class PriorityQueue {
 	 * Move an object to another time in the queue
 	 */
 	move(object, time) {
-		if (time !== Infinity && time != -Infinity) {
+		if (time !== Infinity && time !== -Infinity) {
 
-			if (this.__heap.contains(object)) {
+			if (this.__heap.contains(object) !== -1) {
 				this.__heap.update(object, time);
 			} else {
 				this.__heap.insert(time, object); // add new object

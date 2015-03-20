@@ -20,8 +20,11 @@ class Heap {
 	// Abstract method which brings elements down the tree from the i index.
 	__percDown(i) {}
 
+	// Updates 
+	update(object) {}
+
 	// Removes an object from the heap, item being refering to the nested object
-	remove(item) {}
+	remove(object) {}
 
 	// Build the heap from an object list and structure it
 	buildHeap(list) {}
@@ -30,26 +33,13 @@ class Heap {
 	empty() {}
 
 	/**
-	 * Static method used to get a specific index down the tree
-	 * for swap/perc purposes in the perc down method
-	 */
-	__childPosition(i) {
-		if ((i * 2 + 1 > this.currentSize) ||
-			(this.heapList[i * 2].heapValue <  this.heapList[i * 2 + 1].heapValue)) {
-			return i * 2;
-		} else {
-			return i * 2 + 1;
-		}
-	}
-
-	/**
 	 * Insert a value with an associated object in the heap tree. The perc up
 	 * method implementation should handle what to do with the heapValue (eg min
 	 * or max sorting).
 	 *
 	 * @params value being the heapValue used for sorting and any object
 	 */
-	insert(value, object) {
+	insert(value, object = {}) {
 		this.heapList.push({
 			'object': object,
 			'heapValue': value
@@ -59,21 +49,7 @@ class Heap {
 	}
 
 	/**
-	 * Find the object reference in the heap list and update its heapValue.
-	 * The tree should the be sorted using perc up to bring the next desired value
-	 * as the head.
-	 */
-	update(object, value) {
-		for (var i = 1; i <= this.currentSize; i++) {
-			if (object === this.heapList[i].object) {
-				this.heapList[i].heapValue = value;
-				this.__percUp(this.currentSize);
-			}
-		}
-	}
-
-	/**
-	 * Method used to get the head (minimal) of heap list. Puts it at the end of
+	 * Method used to get the head of the heap list. Puts it at the end of
 	 * the list and takes it out with pop. Assures that the tree is restored.
 	 */
 	deleteHead() {
@@ -109,20 +85,21 @@ class Heap {
 	/**
 	 * Current size accessor
 	 */
-	size() {
+	get size() {
 		return this.currentSize;
 	}
 
 	/**
-	* Returns wheter or not the object is already in the heap
-	*/
+	 * If the heap contains the object, it will return its index, otherwise it
+	 * returns -1.
+	 */
 	contains(object) {
-		for (var i = 1; i <= this.currentSize; i++) {
+		for (var i = 0; i <= this.currentSize; i++) {
 			if (object === this.heapList[i].object) {
-				return true;
+				return i;
 			}
 		}
-		return false;
+		return -1;
 	}
 
 	/**

@@ -42,7 +42,6 @@ class PlayControlLoopControl extends TimeEngine {
       this.__playControl.syncSpeed(time, this.__playControl.__loopEnd, this.speed, true);
       return this.__playControl.__getTimeAtPosition(this.__playControl.__loopStart);
     }
-
     return Infinity;
   }
 }

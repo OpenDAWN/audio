@@ -8,10 +8,10 @@ var Heap = require('./heap');
  *
  * @author: Renaud Vincent https://github.com/renaudfv
  **/
- class MinHeap extends Heap {
+class MinHeap extends Heap {
 
- 	constructor() {
- 		super();
+	constructor() {
+		super();
 		// Empty object with minimal value used for swaping on the first insertions
 		this.heapList = [{
 			'object': {},
@@ -20,88 +20,118 @@ var Heap = require('./heap');
 	}
 
 	/**
-	 * Method used to maintain the min heap property from a certain index. It is
-	 * used locally from the end of the heap list upon insertion, update and
-	 * removal. It percolates min values up the binary tree.
+	 * Static method used to get the index of the minimal child at i. Used in
+	 * percDown to compare a parent to its child.
+	 *
+	 * @params i, the index of the parent to observe
 	 */
-	 __percUp(i) {
-	 	var ceiledIndex, tmp;
-
-	 	while (Math.floor(i / 2) > 0) {
-	 		ceiledIndex = Math.ceil(i / 2);
-			// Is the item at i smaller than the one at ceiled index
-			if (this.heapList[i].heapValue <  this.heapList[ceiledIndex].heapValue) {
-				tmp = this.heapList[ceiledIndex];
-				this.heapList[ceiledIndex] = this.heapList[i];
-				this.heapList[i] = tmp;
-			}
-
-			i = ceiledIndex;
+	__minChildPosition(i) {
+		if ((i * 2 + 1 > this.currentSize) ||
+			(this.heapList[i * 2].heapValue <  this.heapList[i * 2 + 1].heapValue)) {
+			return i * 2; // Left child
+		} else {
+			return i * 2 + 1; // Right child
 		}
 	}
 
 	/**
-	 * Method used to maintain the min heap property from a certain index. It is
-	 * used locally from the start of the heap list upon deletion. Items are 
-	 * swaped down the tree if they have a bigger reference value.
+	 * Percolates the item at i index up the tree if it is smaller
 	 */
-	 __percDown(i) {
-	 	var refPos, tmp;
+	__percUp(i) {
+		var parentIndex, tmp;
 
-	 	while ((i * 2) <= this.currentSize) {
-	 		refPos = this.__childPosition(i);
-			// Is the item at i greater than the reference down the tree
-			if (this.heapList[i].heapValue > this.heapList[refPos].heapValue) {
-				tmp = this.heapList[i];
-				this.heapList[i] = this.heapList[refPos];
-				this.heapList[refPos] = tmp;
+		while (Math.floor(i / 2) > 0) {
+			parentIndex = Math.floor(i / 2);
+			// Is the item at i smaller than the one at ceiled index
+			if (this.heapList[i].heapValue <  this.heapList[parentIndex].heapValue) {
+				tmp = this.heapList[parentIndex];
+				this.heapList[parentIndex] = this.heapList[i];
+				this.heapList[i] = tmp;
 			}
 
-			i = refPos;
+			i = parentIndex;
+		}
+	}
+
+	/**
+	 * Percolates the item at i index down the tree if smaller than its child
+	 */
+	__percDown(i) {
+		var childIndex, tmp;
+
+		while ((i * 2) <= this.currentSize) {
+			childIndex = this.__minChildPosition(i);
+			// Is the item at i greater than the reference down the tree
+			if (this.heapList[i].heapValue > this.heapList[childIndex].heapValue) {
+				tmp = this.heapList[i];
+				this.heapList[i] = this.heapList[childIndex];
+				this.heapList[childIndex] = tmp;
+			}
+
+			i = childIndex;
+		}
+	}
+
+	/**
+	 * Find the object reference in the heap list and update its heapValue.
+	 * If the updated value is greater than the original value, the item should
+	 * be percolated down the tree, otherwise up the tree.
+	 */
+	update(object, value) {
+		var index = this.contains(object);
+
+		if (index !== -1) {
+			var ref = this.heapList[index].heapValue;
+			this.heapList[index].heapValue = value;
+
+			if (value > ref)
+				this.__percDown(index);
+			else
+				this.__percUp(index);
 		}
 	}
 
 	/**
 	 * Finds the item object reference in the heap list brings it up the tree by
-	 * having a -infinity value. The tree is the sorted and the head is removed.
+	 * having a 0 value. The tree is the sorted and the head is removed.
 	 */
-	 remove(item) {
-	 	for (var i = 0; i <= this.currentSize; i++) {
-	 		if (item === this.heapList[i].object) {
-	 			this.heapList[i].heapValue = 0;
-	 			this.__percUp(this.currentSize);
-	 			this.deleteHead(); 
-	 		}
-	 	}
+	remove(object) {
+		var index = this.contains(object);
 
-	 	if(!this.isEmpty()) 
-	 		return this.headValue();
+		if (index !== -1) {
+			this.heapList[index].heapValue = 0;
+			this.__percUp(index);
+			this.deleteHead();
+		}
 
-	 	return Infinity;
-	 }
+		if (!this.isEmpty())
+			return this.headValue();
+
+		return Infinity;
+	}
 
 	/**
-	 * Build heap from an object list and structure it with a minimal swap 
+	 * Build heap from an object list and structure it with a minimal swap
 	 * reference
 	 */
-	 buildHeap(list) {
+	buildHeap(list) {
 
-	 	this.currentSize = list.length;
-	 	this.heapList = [{
-	 		'object': {},
-	 		'heapValue': 0
-	 	}].concat(list);
+		this.currentSize = list.length;
+		this.heapList = [{
+			'object': {},
+			'heapValue': 0
+		}].concat(list);
 
-	 	var i = list.length - 1;
-	 	while (i  >  0) {
-	 		this.__percUp(i);
-	 		i--;
-	 	}
-	 }
+		var i = list.length;
+		while (i  >  0) {
+			this.__percDown(i);
+			i--;
+		}
+	}
 
 	/**
-	* Clear the list with a minimal heapValue swap reference
-	*/
+	 * Clear the list with a minimal heapValue swap reference
+	 */
 	empty() {
 		this.heapList = [{
 			'object': {},

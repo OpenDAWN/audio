@@ -5,7 +5,7 @@
  */
 'use strict';
 
-var PriorityQueue = require("../utils/priority-queue");
+var PriorityQueue = require("../utils/priority-queue-heap");
 var TimeEngine = require("../core/time-engine");
 
 function arrayRemove(array, value) {
